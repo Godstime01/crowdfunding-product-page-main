@@ -186,9 +186,18 @@ h4 {
     color: white;
 }
 
+.button--cyan:hover{
+    background-color: var(--dark-cyan);
+}
+
 .button--gray {
     background-color: hsla(0, 8%, 80%, 0.67);
     color: var(--dark-gray);
+}
+
+.button--gray:hover{
+    background-color: var(--dark-gray);
+    color: hsla(0, 8%, 80%, 0.67);
 }
 
 
@@ -278,6 +287,23 @@ h4 {
     gap: 1rem;
 }
 
+
+/* progress bar */
+.progress{
+    position: relative;
+    width: 100%;
+    border-radius: 999px;
+    height: 15px;
+    background-color: hsl(161, 51%, 93%);
+    margin-block-start: 3em;
+}
+
+.progress--inner{
+    height: 100%;
+    width: 50%;
+    background-color: var(--cyan);
+    border-radius: inherit;
+}
 
 @media screen and (max-width: 700px){
     *  div{

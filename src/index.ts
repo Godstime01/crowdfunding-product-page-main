@@ -4,6 +4,54 @@ import "./style.css";
 import MicroModal from 'micromodal';
 
 
+// type interface  
+interface ProjectData {
+    amount: number;
+    number_of_backer: number;
+    target: number;
+    days_left?: number | null
+}
+
+const totalElement = document.querySelector('#total') as HTMLSpanElement
+const targetElement = document.querySelector('#target') as HTMLSpanElement
+const backerElement = document.querySelector('#backer') as HTMLSpanElement
+const days_leftElement = document.querySelector('#days_left') as HTMLSpanElement
+
+// initial project data
+
+const data: ProjectData = {
+    amount: 200000,
+    number_of_backer: 4000,
+    target: 600000,
+    days_left: 50
+}
+
+function increment_backer() {
+    data.number_of_backer = + 1
+    // return data.number_of_backer
+}
+
+function addBacking(amount: number){
+    // this function will get called when the backing as been completed
+    data.amount += amount;
+
+}
+
+function progress_bar() {
+    const progress_bar = document.querySelector('.progress > div') as HTMLDivElement;
+
+    let progress = (data.amount / data.target) * 100;
+
+    progress_bar.style.width = progress + '%';
+}
+
+function updateHtml(){
+    // this function will be clled when the user updte or mke  bcking
+    progress_bar()
+    totalElement.innerHTML = data.amount.toString()
+    backerElement.innerHTML = data.number_of_backer.toString()
+}
+
 function pledge_input(parent: HTMLElement) {
     const divWrapper = document.createElement('div') as HTMLDivElement;
     divWrapper.classList.add('extra-content');
@@ -23,34 +71,32 @@ function pledge_input(parent: HTMLElement) {
     parent.appendChild(divWrapper);
 
     // Prevent click events on the input field from bubbling up to the parent
-    divWrapper.addEventListener('click', (e:MouseEvent) => {
+    divWrapper.addEventListener('click', (e: MouseEvent) => {
         e.stopPropagation();
 
         const _target = e.target as HTMLButtonElement
 
-        if(_target.id == 'continue'){
+        if (_target.id == 'continue') {
 
             e.preventDefault()
 
             const input = document.querySelector('.extra-content--input_field') as HTMLInputElement
-            if( input.value == "") {
+            if (input.value == "") {
                 input.style.border = '1px red solid';
                 return
-            } 
+            }
+
+            addBacking(Number(input.value));
+            // increase number of backers
+            increment_backer()
+
+            updateHtml()
 
             MicroModal.close('modal-1');
             MicroModal.show('modal-2')
         }
-        console.log(e.target)
+        // console.log(e.target)
     });
-
-    // Prevent focus events on the input field from bubbling up to the parent
-    // const inputField = divWrapper.querySelector('input[type="text"]');
-    // if (inputField) {
-    //     inputField.addEventListener('focus', e => {
-    //         e.stopPropagation();
-    //     });
-    // }
 }
 
 
@@ -107,23 +153,11 @@ pledgeOptions.forEach(pledgeOption => {
     })
 })
 
-// console.log(pledgeOptions)
-
 MicroModal.init({
     onShow: modal => console.info(`${modal.id} is shown`), // [1]
     onClose: modal => console.info(`${modal.id} is hidden`), // [2]
     openClass: 'is-open', // [5]
 });
-
-
-// add event to the pledge form
-const continueBtn = document.querySelector('#continue') as HTMLButtonElement
-
-continueBtn.addEventListener('click', (e: MouseEvent) => {
-    e.stopPropagation();
-    console.log("Form is submitted");
-});
-
 
 // close the final modal
 
@@ -134,4 +168,13 @@ finishBtn.addEventListener('click', (e: MouseEvent) => {
     e.stopPropagation();
 
     MicroModal.close('modal-2')
+})
+
+
+// TODO: chnge to domcontent loded
+window.addEventListener('load', (e: Event) => {
+    totalElement.innerHTML = `$${data.amount.toString()}`
+    backerElement.innerHTML = `${data.number_of_backer.toString()}`
+    days_leftElement.innerHTML = `${data.days_left.toString()}`
+    targetElement.innerHTML = `$${data.target.toString()}`
 })
